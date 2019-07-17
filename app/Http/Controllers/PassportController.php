@@ -26,6 +26,7 @@ class PassportController extends UserController
             return new PassportResource(['validation-error' => $validator->errors()]);
         }
 
+        $input['password'] = Hash::make($input['password']);
         $data = $this->user->create($input);
         $data['token'] =  $data->createToken('AppName')->accessToken;
 

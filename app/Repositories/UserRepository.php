@@ -17,7 +17,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function create(array $attributes)
     {
-        $attributes['password'] = Hash::make($attributes['password']);
         return $this->user->create($attributes);
     }
 

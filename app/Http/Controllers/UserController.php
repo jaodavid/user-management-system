@@ -63,6 +63,8 @@ class UserController extends Controller
 			return new UserResource(['validation-error' => $validator->errors()]);
 		}
 
+        $input['password'] = Hash::make($input['password']);
+
         if (isset($id)) {
         	if($this->user->update($id, $input)) {
         		$data = $this->user->get($id);
