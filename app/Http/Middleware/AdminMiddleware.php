@@ -19,7 +19,7 @@ class AdminMiddleware
         if ($request->user() && !$request->user()->is_admin)
         {
             return response()->json([
-                'error-message' => 'Oops! Bawal yan',
+                'error-message' => 'Unauthorized.',
             ]);
         }
         return $next($request);

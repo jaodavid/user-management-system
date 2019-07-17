@@ -39,5 +39,5 @@ Route::middleware('auth:api', 'admin.only')->group(function () {
     Route::delete('user/{id}', 'UserController@destroy');
 
     // Delete multiple User
-    Route::delete('users', 'UserController@deleteMultiple');
+    Route::post('users/delete-multiple', 'UserController@deleteMultiple');
 });
