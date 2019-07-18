@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepositoryInterface;
 use App\http\Resources\Passport as PassportResource;
 
@@ -23,7 +24,7 @@ class PassportController extends UserController
         $validator = Validator::make($input, $this->storeRules);
 
         if ($validator->fails()) {          
-            return new PassportResource(['validation-error' => $validator->errors()]);
+            return new PassportResource(['error' => $validator->errors()]);
         }
 
         $input['password'] = Hash::make($input['password']);
@@ -51,7 +52,7 @@ class PassportController extends UserController
             $data['token'] = $data->createToken('AppName')->accessToken;
             return new PassportResource($data);
         } else {
-            return new PassportResource([ 'error-message' => ['Unauthorized']]);
+            return new PassportResource(['message' => 'Unauthorized']);
         }
     }
 

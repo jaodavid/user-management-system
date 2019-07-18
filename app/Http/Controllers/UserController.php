@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepositoryInterface;
 use App\http\Resources\User as UserResource;
 
@@ -24,8 +25,6 @@ class UserController extends Controller
             'last_name' => ['required', 'string'],
             'username' => ['required', 'string'],
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string', 'min:8'],
-            'confirm_password' => ['required', 'same:password'],
 		];
     }
 
@@ -53,25 +52,26 @@ class UserController extends Controller
         if ($request->isMethod('put')) {
         	$id = $input['id'];
         } else {
+            $this->storeRules['password'] = ['required', 'string', 'min:8'];
+            $this->storeRules['confirm_password'] = ['required', 'same:password'];
         	array_push($this->storeRules['email'], 'unique:users');
-        	unset($input['id']);
+            unset($input['id']);
         }
 
         $validator = Validator::make($input, $this->storeRules);
 
 		if ($validator->fails()) {
-			return new UserResource(['validation-error' => $validator->errors()]);
+			return new UserResource(['error' => $validator->errors()]);
 		}
-
-        $input['password'] = Hash::make($input['password']);
 
         if (isset($id)) {
         	if($this->user->update($id, $input)) {
         		$data = $this->user->get($id);
         	} else {
-        		return new UserResource([ 'error-message' => ["unable to save record"]]);
+        		return new UserResource([ 'message' => "unable to save record."]);
         	}
         } else {
+            $input['password'] = Hash::make($input['password']);
         	$data = $this->user->create($input);
         	$data['token'] = $data->createToken('AppName')->accessToken;
         }
@@ -94,7 +94,7 @@ class UserController extends Controller
             return new UserResource($data);
         } else {
             // return error as a resource if the user object is null
-            return new UserResource([ 'error-message' => ["unable to fetch user"]]);
+            return new UserResource([ 'message' => 'unable to fetch user']);
         }
     }
 
@@ -114,7 +114,7 @@ class UserController extends Controller
             return new UserResource($data);
         } else {
             // return error as a resource if the user object is null
-            return new UserResource([ 'error-message' => ["unable to delete record"]]);
+            return new UserResource(['message' => 'unable to delete record']);
         }
     }
 
@@ -140,11 +140,11 @@ class UserController extends Controller
                 return UserResource::collection($users);
             } else {
                 // return unable to delete error if users are not present
-                return new UserResource([ 'error-message' => ["unable to delete record/s"]]);
+                return new UserResource(['message' => 'unable to delete record/s']);
             }
 		} else {
             // return validation error/s as a resource
-            return new UserResource(['validation-error' => $validator->errors()]);
+            return new UserResource(['error' => $validator->errors()]);
         }
     }
 }
