@@ -20,6 +20,8 @@ class PassportController extends UserController
     public function register(Request $request)
     {
         $input = $request->all();
+        $this->storeRules['password'] = ['required', 'string', 'min:8'];
+        $this->storeRules['confirm_password'] = ['required', 'same:password'];
         array_push($this->storeRules['email'], 'unique:users');
         $validator = Validator::make($input, $this->storeRules);
 
