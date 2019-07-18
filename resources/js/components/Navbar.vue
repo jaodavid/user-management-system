@@ -1,17 +1,11 @@
 <template>
-	<div class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <a class="navbar-brand" href="#">User Management System</a>
-      </div>
-
-      <div class="collapse navbar-collapse" id="navbarText" v-if="token !== null">
-	    <ul class="navbar-nav mr-auto"></ul>
-	    <a class="navbar-brand" href="#" @click="userLogout()">Logout</a>
-	  </div>
-    </div>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand text-light">User Management System</a>
+        <div class="form-inline" v-if="token !== null">
+            <a class="navbar-brand text-light"> Hi {{ auth.first_name }},</a>
+            <a class="mr-sm-2 text-light" href="#" @click="userLogout()">Logout</a>
+        </div>
+    </nav>
 </template>
 
 <script>
